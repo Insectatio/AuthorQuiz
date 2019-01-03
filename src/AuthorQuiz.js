@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PropTypes from 'prop-types';
 
@@ -13,13 +14,13 @@ function Hero() {
 }
 
 function Book({ title, onClick }) {
-  return (<div className="answer" onClick={() => {onClick(title);}}>
+  return (<div className="answer" onClick={() => { onClick(title); }}>
     <h2>{title}</h2>
   </div>)
 }
 
-function Turn({author, books, highlight, onAnswerSelected}) {
-  function highlightToBgColor(highlight){
+function Turn({ author, books, highlight, onAnswerSelected }) {
+  function highlightToBgColor(highlight) {
     const mapping = {
       'none': '',
       'correct': 'green',
@@ -28,9 +29,9 @@ function Turn({author, books, highlight, onAnswerSelected}) {
     return mapping[highlight];
   }
 
-  return (<div className="row turn" style={{backgroundColor: highlightToBgColor(highlight)}}>
+  return (<div className="row turn" style={{ backgroundColor: highlightToBgColor(highlight) }}>
     <div className="col-4 offset-1">
-      <img src={author.imageUrl} className="authorimage" alt="Author"/>
+      <img src={author.imageUrl} className="authorimage" alt="Author" />
     </div>
     <div className="col-6">
       {books.map((title) => <Book title={title} key={title} onClick={onAnswerSelected} />)}
@@ -40,18 +41,26 @@ function Turn({author, books, highlight, onAnswerSelected}) {
 
 Turn.propTypes = {
   author: PropTypes.shape({
-     name: PropTypes.string.isRequired,
-     imageUrl: PropTypes.string.isRequired,
-     imageSource: PropTypes.string.isRequired,
-     books: PropTypes.arrayOf(PropTypes.string).isRequired
+    name: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    imageSource: PropTypes.string.isRequired,
+    books: PropTypes.arrayOf(PropTypes.string).isRequired
   }),
   books: PropTypes.arrayOf(PropTypes.string).isRequired,
   onAnswerSelected: PropTypes.func.isRequired,
   highlight: PropTypes.string.isRequired
 };
 
-function Continue() {
-  return (<div></div>);
+function Continue({ show, onContinue }) {
+  return (
+    <div className="row continue">
+    { show 
+      ? <div className="col-11">
+          <button className="btn btn-success btn-lg float-right" onClick={onContinue}>Continue</button>
+        </div>
+      : null }
+    </div>
+  );
 }
 
 function Footer() {
@@ -64,12 +73,13 @@ function Footer() {
   </div>);
 }
 
-function AuthorQuiz({ turnData, highlight, onAnswerSelected }) {
+function AuthorQuiz({turnData, highlight, onAnswerSelected, onContinue}) {
   return (
     <div className="container-fluid">
       <Hero />
-      <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected}/>
-      <Continue />
+      <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected} />
+      <Continue show={highlight === 'correct'} onContinue={onContinue}/>
+      <p><Link to="/add">Add an author</Link></p>
       <Footer />
     </div>
   );
