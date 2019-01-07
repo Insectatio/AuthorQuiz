@@ -10,3 +10,7 @@
 .AddAuthorForm_input > label {
     display: block;
 }
+
+.goToHome {
+    padding-top: 30px;
+}
